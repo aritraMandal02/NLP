@@ -25,12 +25,21 @@ for item in datastore:
     labels.append(item['is_sarcastic'])
     urls.append(item['article_link'])
 
-tokenizer = Tokenizer(oov_token=oov_tok)
-tokenizer.fit_on_texts(sentences)
+training_sentences = sentences[0:training_size]
+testing_sentences = sentences[training_size:]
+training_labels = labels[0:training_size]
+testing_labels = labels[training_size:]
+
+tokenizer = Tokenizer(num_w0rds=vocab_size, oov_token=oov_tok)
+tokenizer.fit_on_texts(training_sentences)
 word_index = tokenizer.word_index
 
-sequences = tokenizer.texts_to_sequences(sentences)
-padded = pad_sequences(sequences, padding='post')
+training_sequences = tokenizer.texts_to_sequences(training_sentences)
+training_padded = pad_sequences(training_sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type)
+
+testing_sequences = tokenizer.texts_to_sequences(training_sentences)
+testing_padded = pad_sequences(testing_sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type)
+
 print(padded[0])
 print(padded.shape)
 
