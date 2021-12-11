@@ -48,8 +48,8 @@ testing_padded = np.array(testing_padded)
 testing_labels = np.array(testing_labels)
 
 model = tf.keras.Sequential([
-    tf.keras.layers.Embedding(vocab_size, embedding_dim, input_length=max_length),
-    tf.keras.layers.GlobalAveragePooling1D(),
+    tf.keras.layers.Embedding(vocab_size, embedding_dim, input_length=max_length), # direction of each word will be learnt epoch by epoch
+    tf.keras.layers.GlobalAveragePooling1D(), 
     tf.keras.layers.Dense(24, activation='relu'),
     tf.keras.layers.Dense(1, activation='sigmoid')
 ])
@@ -60,7 +60,8 @@ model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy']
 num_epochs = 30
 history = model.fit(training_padded, training_labels, epochs=num_epochs, validation_data=(testing_padded, testing_labels), verbose=2)
 
-sentence = ["granny starting to fear spiders in the garden might be real", "game of thrones season finale showing this sunday night"]
+sentence = ["granny starting to fear spiders in the garden might be real", "game of thrones season finale showing this sunday night", "Be sarcastic don't kill.",
+ "Silence is golden. Duct tape is silver.", "It's okay if you don't like me. Not everyone has good taste."]
 sequences = tokenizer.texts_to_sequences(sentence)
 padded = pad_sequences(sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type)
 print(model.predict(padded)) # gives the probability
